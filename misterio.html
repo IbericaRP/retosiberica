@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>Reto Darknet IbericaRP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  body {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 20px;
+    user-select: none;
+  }
+  h1 {
+    text-align: center;
+  }
+  #terminal {
+    max-width: 700px;
+    margin: auto;
+    background: #111;
+    border: 2px solid #0f0;
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 0 15px #0f0;
+  }
+  .line {
+    margin: 10px 0;
+  }
+  input[type="text"], input[type="number"] {
+    background: #000;
+    border: 1px solid #0f0;
+    color: #0f0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1em;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  button {
+    background: #0f0;
+    color: #000;
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1em;
+    padding: 8px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background: #003300;
+    cursor: not-allowed;
+  }
+  .success {
+    color: #0f0;
+    font-weight: bold;
+  }
+  .error {
+    color: #f00;
+    font-weight: bold;
+  }
+  .hint {
+    color: #090;
+    font-style: italic;
+    font-size: 0.9em;
+  }
+  #finalSection {
+    display: none;
+    margin-top: 30px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🕵️‍♂️ Reto Darknet IbericaRP 🕵️‍♀️</h1>
+<div id="terminal">
+
+  <div class="line">
+    <strong>Prueba 1:</strong>  
+    El día de lanzamiento del servidor. ¿Cuál es ese día?  
+  </div>
+  <input type="number" id="answer1" placeholder="Completa" autocomplete="off" />
+  <button onclick="checkAnswer1()">Enviar</button>
+  <div id="result1" class="line"></div>
+
+  <hr style="border-color: #0f0; margin: 20px 0;">
+
+  <div class="line">
+    <strong>Prueba 2:</strong>  
+    Encuentra la palabra escondida en esta pista:  
+    "Ib__aRP es nuestro servidor, ¿qué letras faltan?"  
+  </div>
+  <input type="text" id="answer2" placeholder="Completa la palabra" autocomplete="off" disabled />
+  <button onclick="checkAnswer2()" disabled>Enviar</button>
+  <div id="result2" class="line"></div>
+
+  <hr style="border-color: #0f0; margin: 20px 0;">
+
+  <div class="line">
+    <strong>Prueba 3:</strong>  
+    El mes de lanzamiento es un número primo menor que 10. ¿Cuál es?  
+  </div>
+  <input type="number" id="answer3" placeholder="Completa" autocomplete="off" disabled />
+  <button onclick="checkAnswer3()" disabled>Enviar</button>
+  <div id="result3" class="line"></div>
+
+  <hr style="border-color: #0f0; margin: 20px 0;">
+
+  <div class="line">
+    <strong>Prueba 4 - Acertijo final:</strong>  
+    Reordena estas letras para descubrir una palabra clave: <em>NDARKTE</em>  
+    (Es donde ocurre la acción secreta)  
+  </div>
+  <input type="text" id="answer4" placeholder="Palabra clave" autocomplete="off" disabled />
+  <button onclick="checkAnswer4()" disabled>Enviar</button>
+  <div id="result4" class="line"></div>
+
+  <div id="finalSection">
+    <hr style="border-color: #0f0; margin: 20px 0;">
+    <div class="line success">
+      🎉 Has resuelto el acertijo final.<br>
+      La contraseña secreta es: <strong>Ib14e07Darknet</strong>  
+    </div>
+    <div class="line hint">
+      Introduce esta contraseña en el canal secreto del servidor para ganar el premio.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function disableInput(id, disableBtnId) {
+    document.getElementById(id).disabled = true;
+    if(disableBtnId) document.querySelector(`#${disableBtnId}`).disabled = true;
+  }
+  function enableInput(id, enableBtnId) {
+    document.getElementById(id).disabled = false;
+    if(enableBtnId) document.querySelector(`#${enableBtnId}`).disabled = false;
+  }
+
+  function checkAnswer1() {
+    const ans = parseInt(document.getElementById('answer1').value);
+    const res = document.getElementById('result1');
+    if(ans === 14) {
+      res.textContent = "✔ Correcto: El día es 14.";
+      res.className = "line success";
+      disableInput('answer1', null);
+      enableInput('answer2', null);
+      document.querySelector('#answer2 + button').disabled = false;
+    } else {
+      res.textContent = "✘ Incorrecto. Intenta de nuevo.";
+      res.className = "line error";
+    }
+  }
+
+  function checkAnswer2() {
+    const ans = document.getElementById('answer2').value.trim().toLowerCase();
+    const res = document.getElementById('result2');
+    if(ans === "eric") {
+      res.textContent = "✔ Correcto: IbericaRP.";
+      res.className = "line success";
+      disableInput('answer2', null);
+      enableInput('answer3', null);
+      document.querySelector('#answer3 + button').disabled = false;
+    } else {
+      res.textContent = "✘ Incorrecto. Intenta de nuevo.";
+      res.className = "line error";
+    }
+  }
+
+  function checkAnswer3() {
+    const ans = parseInt(document.getElementById('answer3').value);
+    const res = document.getElementById('result3');
+    if(ans === 7) {
+      res.textContent = "✔ Correcto: El mes es julio (7).";
+      res.className = "line success";
+      disableInput('answer3', null);
+      enableInput('answer4', null);
+      document.querySelector('#answer4 + button').disabled = false;
+    } else {
+      res.textContent = "✘ Incorrecto. Intenta de nuevo.";
+      res.className = "line error";
+    }
+  }
+
+  function checkAnswer4() {
+    const ans = document.getElementById('answer4').value.trim().toLowerCase();
+    const res = document.getElementById('result4');
+    if(ans === "darknet") {
+      res.textContent = "✔ Correcto: La palabra clave es DARKNET.";
+      res.className = "line success";
+      disableInput('answer4', null);
+      document.getElementById('finalSection').style.display = "block";
+    } else {
+      res.textContent = "✘ Incorrecto. Intenta de nuevo.";
+      res.className = "line error";
+    }
+  }
+</script>
+
+</body>
+</html>
