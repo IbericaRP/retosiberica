@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tarjeta de Visitante</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    input, select {
+      padding: 8px;
+      margin: 5px;
+      width: 250px;
+    }
+
+    .form-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    canvas, img {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2>Generador de Tarjeta de Visitante</h2>
+  <div class="form-container">
+    <input type="text" id="nombre" placeholder="Nombre y apellidos"><br>
+    <input type="text" id="user" placeholder="Usuario de Roblox"><br>
+    <input type="number" id="edad" placeholder="Edad"><br>
+    <select id="rol">
+      <option>Piloto</option>
+      <option>Organizador</option>
+      <option>VIP</option>
+      <option>Emergencias</option>
+      <option>Marshall</option>
+      <option>TV</option>
+    </select><br>
+    <input type="file" id="foto"><br><br>
+    <button onclick="generarTarjeta()">Generar Tarjeta PDF</button>
+  </div>
+
+  <canvas id="qrCanvas"></canvas>
+
+  <script>
+    async function generarTarjeta() {
+      const { jsPDF } = window.jspdf;
+      const nombre = document.getElementById("nombre").value;
+      const user = document.getElementById("user").value;
+      const edad = document.getElementById("edad").value;
+      const rol = document.getElementById("rol").value;
+      const fotoInput = document.getElementById("foto");
+      const fecha = new Date().toLocaleDateString();
+      const licencia = "LIC-" + Math.floor(100000 + Math.random() * 900000);
+
+      // Crear QR
+      const qr = new QRious({
+        value: licencia,
+        size: 100
+      });
+
+      // Estilos por rol
+      const estilos = {
+        "Piloto":    { color: "#ff0000", texto: "PILOTO" },
+        "Organizador": { color: "#ff8000", texto: "ORGANIZADOR" },
+        "VIP":       { color: "#ffd700", texto: "VIP" },
+        "Emergencias": { color: "#00cc00", texto: "EMERGENCIAS" },
+        "Marshall":  { color: "#800080", texto: "MARSHALL" },
+        "TV":        { color: "#0066ff", texto: "TV" }
+      };
+
+      const estilo = estilos[rol];
+
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: [85.6, 54]
+      });
+
+      const w = 85.6;
+      const h = 54;
+
+      // Fondo blanco y borde de color
+      doc.setFillColor(255, 255, 255);
+      doc.rect(0, 0, w, h, 'F');
+      doc.setDrawColor(estilo.color);
+      doc.setLineWidth(2);
+      doc.rect(2, 2, w - 4, h - 4);
+
+      // Título de rol (fuente grande y Roboto simulada)
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(estilo.color);
+      doc.text(estilo.texto, w / 2, 10, { align: "center" });
+
+      // Texto general
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Nombre: ${nombre}`, 5, 18);
+      doc.text(`Usuario Roblox: ${user}`, 5, 24);
+      doc.text(`Edad: ${edad}`, 5, 30);
+      doc.text(`Licencia: ${licencia}`, 5, 36);
+      doc.text(`Fecha: ${fecha}`, 5, 42);
+
+      // Posiciones para contenido visual
+      const qrX = w - 26;
+      const qrY = h - 26;
+      const fotoX = w - 30;
+      const fotoY = 10;
+      const fotoW = 22;
+      const fotoH = 22;
+
+      if (fotoInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const fotoURL = e.target.result;
+          doc.addImage(fotoURL, 'JPEG', fotoX, fotoY, fotoW, fotoH);
+          doc.addImage(qr.toDataURL(), 'PNG', qrX, qrY, 20, 20);
+          doc.save(`Tarjeta_${rol}_${nombre}.pdf`);
+        };
+        reader.readAsDataURL(fotoInput.files[0]);
+      } else {
+        doc.addImage(qr.toDataURL(), 'PNG', qrX, qrY, 20, 20);
+        doc.save(`Tarjeta_${rol}_${nombre}.pdf`);
+      }
+    }
+  </script>
+</body>
+</html>
